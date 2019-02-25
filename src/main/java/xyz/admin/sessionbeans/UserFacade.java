@@ -12,7 +12,7 @@ import xyz.admin.entities.User;
 
 /**
  *
- * @author Administratör
+ * @author Daniel GV
  */
 @Stateless
 public class UserFacade extends AbstractFacade<User> {

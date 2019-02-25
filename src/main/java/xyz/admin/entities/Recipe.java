@@ -6,21 +6,28 @@
 package xyz.admin.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Administratör
+ * @author Daniel GV
  */
 @Entity
 @Table(name = "recipe")
@@ -43,15 +50,24 @@ public class Recipe implements Serializable {
     @Size(max = 45)
     @Column(name = "name")
     private String name;
-    @Size(max = 45)
+    @Size(max = 256)
     @Column(name = "description")
     private String description;
-    @Size(max = 45)
+    @Size(max = 256)
     @Column(name = "instructions")
     private String instructions;
     @Size(max = 45)
     @Column(name = "picture")
     private String picture;
+    @ManyToMany(mappedBy = "recipeCollection")
+    private Collection<User> userCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe1")
+    private Collection<RecipeHasIngredient> recipeHasIngredientCollection;
+    @JoinColumn(name = "user", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User user;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private Collection<Comment> commentCollection;
 
     public Recipe() {
     }
@@ -100,6 +116,41 @@ public class Recipe implements Serializable {
         this.picture = picture;
     }
 
+    @XmlTransient
+    public Collection<User> getUserCollection() {
+        return userCollection;
+    }
+
+    public void setUserCollection(Collection<User> userCollection) {
+        this.userCollection = userCollection;
+    }
+
+    @XmlTransient
+    public Collection<RecipeHasIngredient> getRecipeHasIngredientCollection() {
+        return recipeHasIngredientCollection;
+    }
+
+    public void setRecipeHasIngredientCollection(Collection<RecipeHasIngredient> recipeHasIngredientCollection) {
+        this.recipeHasIngredientCollection = recipeHasIngredientCollection;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @XmlTransient
+    public Collection<Comment> getCommentCollection() {
+        return commentCollection;
+    }
+
+    public void setCommentCollection(Collection<Comment> commentCollection) {
+        this.commentCollection = commentCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -122,7 +173,7 @@ public class Recipe implements Serializable {
 
     @Override
     public String toString() {
-        return "xyz.admin.recepies.Recipe[ id=" + id + " ]";
+        return "xyz.admin.entities.Recipe[ id=" + id + " ]";
     }
     
 }

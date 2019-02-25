@@ -12,9 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,13 +26,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Daniel GV
  */
 @Entity
-@Table(name = "category")
+@Table(name = "comment")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
-    , @NamedQuery(name = "Category.findById", query = "SELECT c FROM Category c WHERE c.id = :id")
-    , @NamedQuery(name = "Category.findByName", query = "SELECT c FROM Category c WHERE c.name = :name")})
-public class Category implements Serializable {
+    @NamedQuery(name = "Comment.findAll", query = "SELECT c FROM Comment c")
+    , @NamedQuery(name = "Comment.findById", query = "SELECT c FROM Comment c WHERE c.id = :id")
+    , @NamedQuery(name = "Comment.findByText", query = "SELECT c FROM Comment c WHERE c.text = :text")})
+public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,15 +40,28 @@ public class Category implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 45)
-    @Column(name = "name")
-    private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 280)
+    @Column(name = "text")
+    private String text;
+    @JoinColumn(name = "user", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User user;
+    @JoinColumn(name = "recipe", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Recipe recipe;
 
-    public Category() {
+    public Comment() {
     }
 
-    public Category(Integer id) {
+    public Comment(Integer id) {
         this.id = id;
+    }
+
+    public Comment(Integer id, String text) {
+        this.id = id;
+        this.text = text;
     }
 
     public Integer getId() {
@@ -56,12 +72,28 @@ public class Category implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     @Override
@@ -74,10 +106,10 @@ public class Category implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Category)) {
+        if (!(object instanceof Comment)) {
             return false;
         }
-        Category other = (Category) object;
+        Comment other = (Comment) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -86,7 +118,7 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return "xyz.admin.entities.Category[ id=" + id + " ]";
+        return "xyz.admin.entities.Comment[ id=" + id + " ]";
     }
     
 }

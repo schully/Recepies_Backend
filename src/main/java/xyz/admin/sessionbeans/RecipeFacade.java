@@ -12,7 +12,7 @@ import xyz.admin.entities.Recipe;
 
 /**
  *
- * @author Administratör
+ * @author Daniel GV
  */
 @Stateless
 public class RecipeFacade extends AbstractFacade<Recipe> {

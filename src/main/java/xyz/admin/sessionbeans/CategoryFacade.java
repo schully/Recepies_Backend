@@ -12,7 +12,7 @@ import xyz.admin.entities.Category;
 
 /**
  *
- * @author Administratör
+ * @author Daniel GV
  */
 @Stateless
 public class CategoryFacade extends AbstractFacade<Category> {

@@ -8,7 +8,50 @@
         <title>Administrator</title>
     </h:head>
     <h:body>
-        
+
+        <p:dataTable value="#{Recipe.recipes}" var="recipe">
+            <p:column>
+                <f:facet name="header">Name</f:facet>
+                    #{recipe.name}
+            </p:column>
+            <p:column>
+                <f:facet name="header">Description</f:facet>
+                    #{recipe.description}
+            </p:column>
+            <p:column>
+                <f:facet name="header">Instructions</f:facet>
+                    #{recipe.instructions}
+            </p:column>
+            <p:column>
+                <f:facet name="header">Author</f:facet>
+                    #{recipe.user.username}
+            </p:column>
+            <p:column headerText="Update">
+                <p:commandButton icon="fa fa-edit" onclick="PF('updateDialog').show()" action="#{Recipe.setUpdateRecipeForm(updateRecipe)}" update=":updateForm"/>
+            </p:column>
+        </p:dataTable>
+        <p:dialog header="updateRecipe" widgetVar="updateDialog" closeOnEscape="true">
+            <h:form id="updateForm">
+                <p:panelGrid columns="2">
+                    <h:outputLabel value="id" for="id" />
+                    <p:inputText value="#{Recipes.updateRecipe.id}" id="id" disabled="true" />
+                    <h:outputLabel value="Name" for="name" />
+                    <p:inplace>
+                        <p:inputText value="#{Recipes.updateRecipe.name}" id="name" />
+                    </p:inplace>
+                    <h:outputLabel value="Price" for="price" />
+                    <p:inplace>
+                        <p:spinner value="#{Recipes.updateRecipe.price}" id="price" min="0" />
+                    </p:inplace>
+                    <h:outputLabel value="Publisher" for="publisher" />
+                    <p:inplace>
+                        <p:inputText value="#{Recipes.updateRecipe.publisher.name}" />
+                    </p:inplace>
+                    <h:panelGroup/>
+                    <p:commandButton icon="fa fa-save" action="#{Recipes.saveUpdatedRecipe()}" onclick="PF('updateDialog').hide()" />
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>
 

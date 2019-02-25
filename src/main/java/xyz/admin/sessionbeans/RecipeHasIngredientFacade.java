@@ -8,14 +8,14 @@ package xyz.admin.sessionbeans;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import xyz.admin.entities.Ingredient;
+import xyz.admin.entities.RecipeHasIngredient;
 
 /**
  *
  * @author Daniel GV
  */
 @Stateless
-public class IngredientFacade extends AbstractFacade<Ingredient> {
+public class RecipeHasIngredientFacade extends AbstractFacade<RecipeHasIngredient> {
 
     @PersistenceContext(unitName = "xyz.admin_Recepies_war_1.0-SNAPSHOTPU")
     private EntityManager em;
@@ -25,8 +25,8 @@ public class IngredientFacade extends AbstractFacade<Ingredient> {
         return em;
     }
 
-    public IngredientFacade() {
-        super(Ingredient.class);
+    public RecipeHasIngredientFacade() {
+        super(RecipeHasIngredient.class);
     }
     
 }
