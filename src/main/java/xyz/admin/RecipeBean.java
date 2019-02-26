@@ -27,12 +27,25 @@ public class RecipeBean implements Serializable {
 
     private String name;
 
+    private String description;
+    
+    private String instructions;
+    
     private Recipe updateRecipe;
 
-    private void setUpdaterecipeForm(int id) {
-        this.updateRecipe = recipeFacade.find(id);
+    /**
+     * 
+     * @param recipeId id of recipe in need of an update
+     */
+    public void openUpdateForm(int recipeId) {
+        this.updateRecipe = recipeFacade.find(recipeId);
+    }
+    
+    public void saveUpdatedRecipe() {
+        recipeFacade.edit(updateRecipe);
     }
 
+    //Auto generaed getters & setters
     public Recipe getUpdateRecipe() {
         return updateRecipe;
     }
@@ -62,17 +75,29 @@ public class RecipeBean implements Serializable {
     @EJB
     UserFacade userFacade;
 
+    /**
+     * 
+     * @return recipes from database, sorted by id by default
+     */
     public List<Recipe> getRecipes() {
         return recipeFacade.findAll();
     }
     
+    /**
+     * 
+     * @return always "index", with the purpose of reloading the page 
+     */
     public String saveRecipe() {
-        Recipe recipe = new Recipe();
+        Recipe recipe = new Recipe(null, name, description, instructions);
         User user = userFacade.find(userId);
         recipe.setUser(user);
         recipeFacade.create(recipe);
         name = "";
         return "index";
+    }
+
+    public RecipeBean() {
+        updateRecipe = new Recipe(0);
     }
 
 }

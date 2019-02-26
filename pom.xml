@@ -8,6 +8,7 @@
     <packaging>war</packaging>
 
     <name>Recepies</name>
+    <name>Recipes</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
