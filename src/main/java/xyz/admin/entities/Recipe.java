@@ -76,6 +76,13 @@ public class Recipe implements Serializable {
         this.id = id;
     }
 
+    public Recipe(Integer id, String name, String description, String instructions) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.instructions = instructions;
+    }
+
     public Integer getId() {
         return id;
     }
