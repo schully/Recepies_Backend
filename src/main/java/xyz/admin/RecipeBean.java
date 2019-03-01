@@ -44,7 +44,11 @@ public class RecipeBean implements Serializable {
     public void saveUpdatedRecipe() {
         recipeFacade.edit(updateRecipe);
     }
-
+    
+    public void deleteRecipe() {
+        recipeFacade.remove(updateRecipe);
+    }
+    
     //Auto generaed getters & setters
     public Recipe getUpdateRecipe() {
         return updateRecipe;

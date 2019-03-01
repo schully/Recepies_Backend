@@ -14,7 +14,6 @@
         <p:dataTable value="#{Recipe.recipes}" var="recipe" id="dataTable">
             <p:column>
                 <f:facet name="header">Name</f:facet>
-                    #{recipe.id}
                     #{recipe.name}
             </p:column>
             <p:column>
@@ -29,7 +28,7 @@
                 <f:facet name="header">User</f:facet>
                     #{recipe.user.username}
             </p:column>
-            <p:column headerText="Update">
+            <p:column width="80" headerText="Update">
                 <p:commandButton icon="fa fa-edit" onclick="PF('updateDialog').show()" action="#{Recipe.openUpdateForm(recipe.id)}" update=":updateForm"/>
             </p:column>
         </p:dataTable>
@@ -39,9 +38,7 @@
                     <h:outputLabel value="id" for="id" />
                     <p:inputText value="#{Recipe.updateRecipe.id}" id="id" disabled="true" />
                     <h:outputLabel value="Name" for="name" />
-
                     <p:inputText value="#{Recipe.updateRecipe.name}" id="name" />
-
                     <h:outputLabel value="Description" for="description" />
                     <p:inputTextarea value="#{Recipe.updateRecipe.description}" id="description" />
                     <h:outputLabel value="Instructions" for="instructions" />
@@ -51,8 +48,9 @@
                         <f:selectItems value="#{User.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.id}" />
                     </p:selectOneMenu>
                     <h:panelGroup/>
-                    <p:commandButton icon="fa fa-save"  action="#{Recipe.saveUpdatedRecipe()}" onclick="PF('updateDialog').hide()" update=":dataTable" />
                 </p:panelGrid>
+                <p:commandButton style="float:right;" icon="fa fa-save" action="#{Recipe.saveUpdatedRecipe()}" onclick="PF('updateDialog').hide()" update=":dataTable" />
+                <p:commandButton style="float:right;" icon="fa fa-trash" action="#{Recipe.deleteRecipe()}" onclick="PF('updateDialog').hide()" update=":dataTable" />
             </h:form>
         </p:dialog>
 
