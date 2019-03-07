@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class ConnectionFactory {
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
-        String host = "209.250.255.250";
+        String host = "localhost:6767";
         String username = "recipeboi";
         String password = "4444";
         String db = "Recipes";

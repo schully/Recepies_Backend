@@ -7,31 +7,41 @@ package xyz.admin.api;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import xyz.admin.utils.ConnectionFactory;
 
 /**
  * Facade for interacting with the database; persisting recipes etc.
+ *
  * @author Daniel GV
  */
 public class RequestFacade {
+
     /**
      * @return The ID of the inserted recipe.
      */
     public int insertRecipe(String name, String description, String instructions) {
-        try (Connection c = ConnectionFactory.getConnection()){
-            String sql = "INSERT into recipe (name, description, instructions, user) VALUES (?,?,?, 4)";
+        try (Connection c = ConnectionFactory.getConnection()) {
+            String sql = "INSERT into recipe (id, name, description, instructions, user) VALUES (NULL,?,?,?, 3)";
             PreparedStatement stmt = (PreparedStatement) c.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setString(2, description);
             stmt.setString(3, instructions);
-            
+
             stmt.executeUpdate();
-            
-            
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return (int) generatedKeys.getLong(1);
+                } else {
+                    throw new RuntimeException("[insertRecipe] No generated keys");
+                }
+            }
         } catch (Exception e) {
-            System.out.println("RequestFacade Error: "+e.getMessage());
+            System.out.println("RequestFacade Error: " + e.getMessage());
+            return 0;
         }
-        return 0;
+
     }
 }

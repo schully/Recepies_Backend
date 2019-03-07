@@ -23,7 +23,7 @@ import org.primefaces.json.JSONObject;
  */
 @Path("")
 public class RequestHandler {
-    private RequestFacade requestefacaaa = new RequestFacade();
+    private RequestFacade requestFacade = new RequestFacade();
 
     @GET
     @Path("/hello/{name}")
@@ -49,7 +49,7 @@ public class RequestHandler {
             String instructions = body.getString("instructions");
 
             //  insertRecipeIntroDb(bane, descriptionm instrucitons)
-            createdRecipeId = requestefacaaa.insertRecipe(name, descriptions, instructions);
+            createdRecipeId = requestFacade.insertRecipe(name, descriptions, instructions);
 
         } catch (JSONException ex) {
             ex.printStackTrace();
