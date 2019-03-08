@@ -39,9 +39,18 @@ public class RecipeBean implements Serializable {
      */
     public void openUpdateForm(int recipeId) {
         this.updateRecipe = recipeFacade.find(recipeId);
+        User ufid = updateRecipe.getUser();
+        this.userId = ufid.getId();
     }
     
     public void saveUpdatedRecipe() {
+        /**
+         * Get user_id from 'this'
+         * Get user with user_id from userFacade
+         * SetUpdateRecipe.user
+         */
+        User ufid = userFacade.find(this.userId);
+        updateRecipe.setUser(ufid);
         recipeFacade.edit(updateRecipe);
     }
     
@@ -59,10 +68,12 @@ public class RecipeBean implements Serializable {
     }
 
     public int getUserId() {
+        System.out.println("getUserId again " + userId);
         return userId;
     }
 
     public void setUserId(int userId) {
+        System.out.println("Bamboolzed again " + userId);
         this.userId = userId;
     }
 

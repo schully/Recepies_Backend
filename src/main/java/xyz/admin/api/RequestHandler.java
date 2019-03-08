@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONException;
@@ -26,8 +27,8 @@ public class RequestHandler {
     private RequestFacade requestFacade = new RequestFacade();
 
     @GET
-    @Path("/hello/{name}")
-    @Produces("application/json")
+    @Path("/recipe/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response hello(@PathParam("name") String name) {
         JSONObject obj = new JSONObject();
 
@@ -37,19 +38,20 @@ public class RequestHandler {
     }
 
     @POST
-    @Path("/hello/add")
-    @Consumes("application/json")
-    @Produces("application/json")
+    @Path("/addrecipe")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response postRecipe(String bodyJson) {
         JSONObject body = new JSONObject(bodyJson);
         int createdRecipeId = 1337;
+        String name, descriptio, instructions;
         try {
-            String name = body.getString("name");
-            String descriptions = body.getString("description");
-            String instructions = body.getString("instructions");
+            name = body.getString("name");
+            descriptio = body.getString("description");
+            instructions = body.getString("instructions");
 
             //  insertRecipeIntroDb(bane, descriptionm instrucitons)
-            createdRecipeId = requestFacade.insertRecipe(name, descriptions, instructions);
+            createdRecipeId = requestFacade.insertRecipe(name, descriptio, instructions);
 
         } catch (JSONException ex) {
             ex.printStackTrace();
@@ -59,8 +61,13 @@ public class RequestHandler {
 
 
         JSONObject output = new JSONObject();
-
-        output.put("recipe_id", createdRecipeId);
+        JSONObject recipe = new JSONObject();
+        recipe.put("id", createdRecipeId);
+        recipe.put("name", name);
+        recipe.put("description", descriptio);
+        recipe.put("instructions", instructions);
+        
+        output.put("recipe", recipe);
 
         return Response.ok(output.toString()).build();
     }

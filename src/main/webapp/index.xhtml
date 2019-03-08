@@ -45,7 +45,8 @@
                     <p:inputTextarea value="#{Recipe.updateRecipe.instructions}" id="instructions" />
                     <h:outputLabel value="User" for="user" />
                     <p:selectOneMenu value="#{Recipe.userId}" id="user">
-                        <f:selectItems value="#{User.users}" var="user" itemLabel="#{user.username}" itemValue="#{user.id}" />
+                        <f:selectItems value="#{User.users}" var="user" itemLabel="#{user.username}"
+                                       itemValue="#{user.id}" actionListener="" />
                     </p:selectOneMenu>
                     <h:panelGroup/>
                 </p:panelGrid>
