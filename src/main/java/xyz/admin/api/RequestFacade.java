@@ -9,6 +9,16 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import xyz.admin.entities.Category;
+import xyz.admin.entities.Comment;
+import xyz.admin.entities.Recipe;
+import xyz.admin.entities.User;
+import xyz.admin.sessionbeans.CategoryFacade;
+import xyz.admin.sessionbeans.RecipeFacade;
+import xyz.admin.sessionbeans.UserFacade;
 import xyz.admin.utils.ConnectionFactory;
 
 /**
@@ -16,32 +26,75 @@ import xyz.admin.utils.ConnectionFactory;
  *
  * @author Daniel GV
  */
+@Stateless
 public class RequestFacade {
+
+    @EJB
+    RecipeFacade recipeFacade;
+
+    @EJB
+    UserFacade userFacade;
+
+    @EJB
+    CategoryFacade categoryFacade;
+    
+    public Recipe getRecipe(int id) {
+        return recipeFacade.find(id);
+    }
 
     /**
      * @return The ID of the inserted recipe.
      */
-    public int insertRecipe(String name, String description, String instructions) {
-        try (Connection c = ConnectionFactory.getConnection()) {
-            String sql = "INSERT into recipe (id, name, description, instructions, user) VALUES (NULL,?,?,?, 3)";
-            PreparedStatement stmt = (PreparedStatement) c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, name);
-            stmt.setString(2, description);
-            stmt.setString(3, instructions);
+    public int insertRecipe(String authorUsername, String category, String name, String description, String instructions) {
+        Category kittyCat = categoryFacade.findByName(category);
+        if (kittyCat == null) {
+            //  category does not exist
+            kittyCat = new Category();
+            kittyCat.setName(category);
 
-            stmt.executeUpdate();
-
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return (int) generatedKeys.getLong(1);
-                } else {
-                    throw new RuntimeException("[insertRecipe] No generated keys");
-                }
+            try {
+                categoryFacade.create(kittyCat);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception e) {
-            System.out.println("RequestFacade Error: " + e.getMessage());
-            return 0;
+        }
+        
+        User user = userFacade.findByUsername(authorUsername);
+        
+        if (user == null) {
+            if (!!!!!!!!!!true) {
+                throw new IllegalArgumentException("Unknown username: " + authorUsername);
+            }
+        }
+        
+        Recipe recipe = new Recipe(kittyCat, name, description, instructions, "");
+        recipe.setUser(user);
+        //RecipeFacade recipeFacade = new RecipeFacade();
+        recipeFacade.create(recipe);
+        
+        recipeFacade.flush();
+
+        return recipe.getId();
+    }
+
+    public void postComment(int userId, int recipeId, String text) {
+        Comment comment = new Comment(null, text);
+        // RecipeFacade recipeFacade = new RecipeFacade();
+        Recipe recipe = recipeFacade.find(recipeId);
+
+        if (recipe == null) {
+            //  TODO: handle
+            return;
         }
 
+        comment.setRecipe(recipe);
+
+        User user = userFacade.find(userId);
+        if (user == null) {
+            return;
+        }
+
+        comment.setUser(user);
     }
+
 }

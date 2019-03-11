@@ -21,7 +21,7 @@ import xyz.admin.utils.ConnectionFactory;
 public class CredentialFacade {
 
     public static Credentials createCredentials(String basicAuth) {
-        basicAuth = basicAuth.substring(6).trim();
+        basicAuth = basicAuth.substring("basic ".length()).trim();
         byte[] bytes = Base64.getDecoder().decode(basicAuth);
         basicAuth = new String(bytes);
         int colon = basicAuth.indexOf(":");
@@ -61,9 +61,11 @@ public class CredentialFacade {
         }
     }
 
-    public static boolean verify(String username, String password) throws SQLException, ClassNotFoundException {
+    public static boolean verify(String username, String rawPassword) throws SQLException, ClassNotFoundException {
         Credentials credentials = get(username);
-        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), credentials.getPassword());
+        BCrypt.Result result = BCrypt.verifyer().verify(rawPassword.toCharArray(), credentials.getPassword());
+        
+        System.out.println("Comparing " + rawPassword + " and " + credentials.getPassword());
         return result.verified;
     }
 }

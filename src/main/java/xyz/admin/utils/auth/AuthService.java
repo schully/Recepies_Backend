@@ -6,7 +6,11 @@
 package xyz.admin.utils.auth;
 
 import com.google.gson.Gson;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -14,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import xyz.admin.utils.ConnectionFactory;
 
 /**
  *
@@ -26,14 +31,16 @@ public class AuthService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response checkUser(@HeaderParam("authorization") String authorization) throws SQLException, ClassNotFoundException {
         Credentials credentials = CredentialFacade.createCredentials(authorization);
+        
         if (CredentialFacade.verify(credentials.getUsername(), credentials.getPassword())) {
             Gson gson = new Gson();
             return Response.ok(gson.toJson(credentials)).build();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();
+        return Response.status(Response.Status.UNAUTHORIZED).entity("invalid password").build();
     }
 
     @POST
+    @Consumes("application/json")
     public Response postUser(@HeaderParam("authorization") String authorization) throws SQLException, ClassNotFoundException {
         Credentials credentials = CredentialFacade.createCredentials(authorization);
         boolean created = CredentialFacade.save(credentials);

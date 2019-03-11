@@ -17,30 +17,42 @@ import javax.ws.rs.ext.Provider;
  * @author Daniel GV
  */
 @Provider
-public class AuthFilter implements ContainerRequestFilter{
+public class AuthFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (requestContext.getMethod().equals("POST")) {
+        String method = requestContext.getMethod();
+
+        if (method.equalsIgnoreCase("options")) {
             return;
         }
+
+        String uri = requestContext.getUriInfo().getRequestUri().toString();
+
+        if ((method.equalsIgnoreCase("post") || method.equalsIgnoreCase("get"))
+                && uri.endsWith("/recipes/api/user")) {
+            //  trying to access the auth endpointuru
+            return;
+        }
+
         String authHeader = requestContext.getHeaderString("authorization");
         if (authHeader == null) {
             authHeader = "";
         }
-        if(authHeader.length() > 0) {
+        if (authHeader.length() > 0) {
             try {
                 Credentials credentials = CredentialFacade.createCredentials(authHeader);
-                if(CredentialFacade.verify(credentials.getUsername(), credentials.getPassword())){
+                if (CredentialFacade.verify(credentials.getUsername(), credentials.getPassword())) {
+                    requestContext.setProperty("username", credentials.getUsername());
                     return;
                 }
             } catch (Exception e) {
-                System.out.println("AuthFilterError: "+e.getMessage());
+                System.out.println("AuthFilterError: " + e.getMessage());
             }
         }
         Response unAuth = Response.status(Response.Status.UNAUTHORIZED).entity("wrong credentials").build();
-        
+
         requestContext.abortWith(unAuth);
     }
-    
+
 }

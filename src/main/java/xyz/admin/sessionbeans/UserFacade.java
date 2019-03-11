@@ -5,6 +5,7 @@
  */
 package xyz.admin.sessionbeans;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,6 +28,17 @@ public class UserFacade extends AbstractFacade<User> {
 
     public UserFacade() {
         super(User.class);
+    }
+    
+    public User findByUsername(String username) {
+        List<User> matches = em.createNamedQuery("User.findByUsername").setParameter("username", username)
+                .getResultList();
+        
+        if (matches.isEmpty()) {
+            return null;
+        } 
+        
+        return matches.get(0);
     }
     
 }

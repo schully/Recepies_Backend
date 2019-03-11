@@ -10,8 +10,12 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import xyz.admin.entities.Category;
+import xyz.admin.entities.Comment;
 import xyz.admin.entities.Recipe;
 import xyz.admin.entities.User;
+import xyz.admin.sessionbeans.CategoryFacade;
+import xyz.admin.sessionbeans.CommentFacade;
 import xyz.admin.sessionbeans.RecipeFacade;
 import xyz.admin.sessionbeans.UserFacade;
 
@@ -28,43 +32,81 @@ public class RecipeBean implements Serializable {
     private String name;
 
     private String description;
-    
+
     private String instructions;
-    
-    private Recipe updateRecipe;
+
+    private Recipe recipeForUpdateDialog;
+    private Recipe recipeForCommentDialog;
+
+    private int categoryId;
+
+    private String picture;
 
     /**
-     * 
-     * @param recipeId id of recipe in need of an update
+     * Opens the update dialog with a given recipe.
+     * @param recipe id of recipe in need of an update
      */
-    public void openUpdateForm(int recipeId) {
-        this.updateRecipe = recipeFacade.find(recipeId);
-        User ufid = updateRecipe.getUser();
+    public void openUpdateDialog(Recipe recipe) {
+        this.recipeForUpdateDialog = recipe;
+        User ufid = recipe.getUser();
         this.userId = ufid.getId();
+        Category ctgr = recipe.getCategory();
+        this.categoryId = ctgr.getId();
     }
     
-    public void saveUpdatedRecipe() {
-        /**
-         * Get user_id from 'this'
-         * Get user with user_id from userFacade
-         * SetUpdateRecipe.user
-         */
-        User ufid = userFacade.find(this.userId);
-        updateRecipe.setUser(ufid);
-        recipeFacade.edit(updateRecipe);
-    }
-    
-    public void deleteRecipe() {
-        recipeFacade.remove(updateRecipe);
-    }
-    
-    //Auto generaed getters & setters
-    public Recipe getUpdateRecipe() {
-        return updateRecipe;
+    /**
+     * Opens the comment dialog with a given recipe.
+     * @param recipe The given recipe.
+     */
+    public void openCommentsDialog(Recipe recipe) {
+        this.recipeForCommentDialog = recipe;
+        User ufid = recipe.getUser();
+        this.userId = ufid.getId();
+        Category ctgr = recipe.getCategory();
+        this.categoryId = ctgr.getId();
     }
 
-    public void setUpdateRecipe(Recipe updateRecipe) {
-        this.updateRecipe = updateRecipe;
+    public void saveUpdateDialog() {
+        /**
+         * Get user_id from 'this' Get user with user_id from userFacade SetUpdateRecipe.user
+         */
+        User ufid = userFacade.find(this.userId);
+        Category ctgr = categoryFacade.find(this.categoryId);
+        recipeForUpdateDialog.setUser(ufid);
+        recipeForUpdateDialog.setCategory(ctgr);
+        recipeFacade.edit(recipeForUpdateDialog);
+    }
+    
+    /**
+     * Saves changes made in the comment dialog.
+     */
+    public void saveComments() {
+        Recipe recipe = recipeForCommentDialog;
+        
+        for (Comment c : recipe.getCommentCollection()) {
+            commentFacade.edit(c);
+        }
+    }
+
+    public void deleteRecipe() {
+        recipeFacade.remove(recipeForUpdateDialog);
+    }
+
+    //Auto generaed getters & setters
+    public Recipe getRecipeForUpdateDialog() {
+        return recipeForUpdateDialog;
+    }
+
+    public void setRecipeForUpdateDialog(Recipe updateRecipe) {
+        this.recipeForUpdateDialog = updateRecipe;
+    }
+
+    public Recipe getRecipeForCommentDialog() {
+        return recipeForCommentDialog;
+    }
+
+    public void setRecipeForCommentDialog(Recipe recipeForCommentDialog) {
+        this.recipeForCommentDialog = recipeForCommentDialog;
     }
 
     public int getUserId() {
@@ -85,34 +127,41 @@ public class RecipeBean implements Serializable {
         this.name = name;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
     @EJB
     RecipeFacade recipeFacade;
     @EJB
     UserFacade userFacade;
+    @EJB
+    CategoryFacade categoryFacade;
+    @EJB
+    CommentFacade commentFacade;
 
     /**
-     * 
+     *
      * @return recipes from database, sorted by id by default
      */
     public List<Recipe> getRecipes() {
         return recipeFacade.findAll();
     }
-    
-    /**
-     * 
-     * @return always "index", with the purpose of reloading the page 
-     */
-    public String saveRecipe() {
-        Recipe recipe = new Recipe(null, name, description, instructions);
-        User user = userFacade.find(userId);
-        recipe.setUser(user);
-        recipeFacade.create(recipe);
-        name = "";
-        return "index";
-    }
 
     public RecipeBean() {
-        updateRecipe = new Recipe(0);
+        recipeForUpdateDialog = new Recipe(0);
     }
 
 }

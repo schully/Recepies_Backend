@@ -17,6 +17,10 @@
                     #{recipe.name}
             </p:column>
             <p:column>
+                <f:facet name="header">Category</f:facet>
+                    #{recipe.category.name}
+            </p:column>
+            <p:column>
                 <f:facet name="header">Description</f:facet>
                     #{recipe.description}
             </p:column>
@@ -29,20 +33,28 @@
                     #{recipe.user.username}
             </p:column>
             <p:column width="80" headerText="Update">
-                <p:commandButton icon="fa fa-edit" onclick="PF('updateDialog').show()" action="#{Recipe.openUpdateForm(recipe.id)}" update=":updateForm"/>
+                <p:commandButton icon="fa fa-edit" onclick="PF('updateDialog').show()" action="#{Recipe.openUpdateDialog(recipe)}" update=":updateForm"/>
+            </p:column>
+            <p:column width="80" headerText="Comments">
+                <p:commandButton icon="fa fa-comments" onclick="PF('commentsDialog').show()" action="#{Recipe.openCommentsDialog(recipe)}" update=":commentsForm"/>
             </p:column>
         </p:dataTable>
         <p:dialog header="updateRecipe" widgetVar="updateDialog" closeOnEscape="true">
             <h:form id="updateForm">
                 <p:panelGrid columns="2">
                     <h:outputLabel value="id" for="id" />
-                    <p:inputText value="#{Recipe.updateRecipe.id}" id="id" disabled="true" />
+                    <p:inputText value="#{Recipe.recipeForUpdateDialog.id}" id="id" disabled="true" />
                     <h:outputLabel value="Name" for="name" />
-                    <p:inputText value="#{Recipe.updateRecipe.name}" id="name" />
+                    <p:inputText value="#{Recipe.recipeForUpdateDialog.name}" id="name" />
+                    <h:outputLabel value="Category" for="category" />
+                    <p:selectOneMenu value="#{Recipe.categoryId}" id="category" >
+                        <f:selectItems value="#{Category.categories}" var="category" itemLabel="#{category.name}" 
+                                       itemValue="#{category.id}" actionListener="" />
+                    </p:selectOneMenu>
                     <h:outputLabel value="Description" for="description" />
-                    <p:inputTextarea value="#{Recipe.updateRecipe.description}" id="description" />
+                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.description}" id="description" />
                     <h:outputLabel value="Instructions" for="instructions" />
-                    <p:inputTextarea value="#{Recipe.updateRecipe.instructions}" id="instructions" />
+                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.instructions}" id="instructions" />
                     <h:outputLabel value="User" for="user" />
                     <p:selectOneMenu value="#{Recipe.userId}" id="user">
                         <f:selectItems value="#{User.users}" var="user" itemLabel="#{user.username}"
@@ -50,8 +62,22 @@
                     </p:selectOneMenu>
                     <h:panelGroup/>
                 </p:panelGrid>
-                <p:commandButton style="float:right;" icon="fa fa-save" action="#{Recipe.saveUpdatedRecipe()}" onclick="PF('updateDialog').hide()" update=":dataTable" />
+                <p:commandButton style="float:right;" icon="fa fa-save" action="#{Recipe.saveUpdateDialog()}" onclick="PF('updateDialog').hide()" update=":dataTable" />
                 <p:commandButton style="float:right;" icon="fa fa-trash" action="#{Recipe.deleteRecipe()}" onclick="PF('updateDialog').hide()" update=":dataTable" />
+            </h:form>
+        </p:dialog>
+        <p:dialog header="Comments and likes" widgetVar="commentsDialog" closeOnEscape="true">
+            <h:form id="commentsForm">
+                <p:dataGrid columns="1" value="#{Recipe.recipeForCommentDialog.commentCollection}" var="comment">
+                    <div style="display:flex;flex-direction:row">
+                        <h:outputLabel style="flex-grow:1" value="#{comment.user.username}" for="user" />
+                        <p:commandButton icon="fa fa-trash" action="#{Comment.deleteComment(comment)}" />
+                    </div>
+                    <div>
+                        <p:inputTextarea value="#{comment.text}" id="text" />
+                    </div>
+                </p:dataGrid>
+                <p:commandButton style="float:right;" icon="fa fa-save" action="#{Recipe.saveComments()}" onclick="PF('commentDialog').hide()" />
             </h:form>
         </p:dialog>
 

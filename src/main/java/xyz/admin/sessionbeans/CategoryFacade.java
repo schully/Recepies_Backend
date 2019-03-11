@@ -5,6 +5,7 @@
  */
 package xyz.admin.sessionbeans;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,8 +26,19 @@ public class CategoryFacade extends AbstractFacade<Category> {
         return em;
     }
 
+    public Category findByName(String name) {
+        List<Category> cats = em.createNamedQuery("Category.findByName", Category.class)
+                .setParameter("name", name).getResultList();
+
+        if (cats.isEmpty()) {
+            return null;
+        }
+
+        return cats.get(0);
+    }
+
     public CategoryFacade() {
         super(Category.class);
     }
-    
+
 }

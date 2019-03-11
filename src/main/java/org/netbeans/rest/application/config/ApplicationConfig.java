@@ -42,6 +42,7 @@ public class ApplicationConfig extends Application {
         resources.add(org.eclipse.persistence.jpa.rs.resources.unversioned.QueryResource.class);
         resources.add(org.eclipse.persistence.jpa.rs.resources.unversioned.SingleResultQueryResource.class);
         resources.add(xyz.admin.api.RequestHandler.class);
+        resources.add(xyz.admin.filter.CORSFilter.class);
         resources.add(xyz.admin.utils.auth.AuthFilter.class);
         resources.add(xyz.admin.utils.auth.AuthService.class);
     }

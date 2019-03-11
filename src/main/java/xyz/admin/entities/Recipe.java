@@ -41,6 +41,10 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Recipe.findByPicture", query = "SELECT r FROM Recipe r WHERE r.picture = :picture")})
 public class Recipe implements Serializable {
 
+    @JoinColumn(name = "category", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Category category;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,12 +80,15 @@ public class Recipe implements Serializable {
         this.id = id;
     }
 
-    public Recipe(Integer id, String name, String description, String instructions) {
-        this.id = id;
+    public Recipe(Category category, String name, String description, String instructions, String picture) {
+        this.category = category;
         this.name = name;
         this.description = description;
         this.instructions = instructions;
+        this.picture = picture;
     }
+
+    
 
     public Integer getId() {
         return id;
@@ -180,7 +187,15 @@ public class Recipe implements Serializable {
 
     @Override
     public String toString() {
-        return "xyz.admin.entities.Recipe[ id=" + id + " ]";
+        return "Recipe{" + "category=" + category + ", id=" + id + ", name=" + name + ", description=" + description + ", instructions=" + instructions + ", picture=" + picture + ", userCollection=" + userCollection + ", recipeHasIngredientCollection=" + recipeHasIngredientCollection + ", user=" + user + ", commentCollection=" + commentCollection + '}';
     }
-    
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
 }

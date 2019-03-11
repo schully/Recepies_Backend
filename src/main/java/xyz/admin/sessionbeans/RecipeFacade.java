@@ -6,6 +6,8 @@
 package xyz.admin.sessionbeans;
 
 import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import xyz.admin.entities.Recipe;
@@ -17,7 +19,7 @@ import xyz.admin.entities.Recipe;
 @Stateless
 public class RecipeFacade extends AbstractFacade<Recipe> {
 
-    @PersistenceContext(unitName = "xyz.admin_Recepies_war_1.0-SNAPSHOTPU")
+    @PersistenceContext(name = "xyz.admin_Recepies_war_1.0-SNAPSHOTPU")
     private EntityManager em;
 
     @Override
@@ -27,6 +29,10 @@ public class RecipeFacade extends AbstractFacade<Recipe> {
 
     public RecipeFacade() {
         super(Recipe.class);
+    }
+    
+    public void flush() {
+        em.flush();
     }
     
 }
