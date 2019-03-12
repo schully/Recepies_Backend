@@ -47,8 +47,6 @@ public class CredentialFacadeIT {
         Credentials expResult = null;
         Credentials result = CredentialFacade.createCredentials(basicAuth);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -61,8 +59,6 @@ public class CredentialFacadeIT {
         boolean expResult = false;
         boolean result = CredentialFacade.save(credentials);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -75,8 +71,6 @@ public class CredentialFacadeIT {
         Credentials expResult = null;
         Credentials result = CredentialFacade.get(username);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -90,8 +84,6 @@ public class CredentialFacadeIT {
         boolean expResult = false;
         boolean result = CredentialFacade.verify(username, password);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

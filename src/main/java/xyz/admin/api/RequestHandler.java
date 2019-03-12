@@ -47,6 +47,7 @@ public class RequestHandler {
         JSONObject obj = new JSONObject();
 
         obj.put("name", recipe.getName());
+        obj.put("picture", recipe.getPicture());
         obj.put("author", recipe.getUser().getUsername());
         obj.put("description", recipe.getDescription());
         obj.put("instructions", recipe.getInstructions());
@@ -59,7 +60,7 @@ public class RequestHandler {
             ingredients.put(ingredientObj);
         }
         obj.put("ingredients", ingredients);
-        obj.put("category", recipe.getName());
+        obj.put("category", recipe.getCategory().getName());
 
         return Response.ok(obj.toString()).build();
     }
@@ -68,15 +69,15 @@ public class RequestHandler {
     @Path("/{recipeId}/addcomment")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postComment(String bodyJson, @PathParam("recipeId") String recipeId) {
+    public Response postComment(String bodyJson, @PathParam("recipeId") int recipeId) {
         JSONObject body = new JSONObject(bodyJson);
         int userId;
-        int recipeID;
         String text;
         try {
             userId = body.getInt("user");
-            recipeID = body.getInt("recipe");
+            recipeId = body.getInt("recipe");
             text = body.getString("text");
+            requestFacade.postComment(userId, recipeId, text);
         } catch (JSONException e) {
             e.printStackTrace();
             return Response.status(400).build();
@@ -86,7 +87,7 @@ public class RequestHandler {
         JSONObject comment = new JSONObject();
 
         comment.put("user", userId);
-        comment.put("recipe", recipeID);
+        comment.put("recipe", recipeId);
         comment.put("text", text);
 
         output.put("comment", comment);
@@ -109,7 +110,11 @@ public class RequestHandler {
             category = body.getString("category");
             //  insertRecipeIntroDb(bane, descriptionm instrucitons)
             createdRecipeId = requestFacade.insertRecipe(
-                    ctx.getProperty("username").toString(), category, name, description, instructions
+                    ctx.getProperty("username").toString(),
+                    name,
+                    category,
+                    description,
+                    instructions
             );
 
         } catch (JSONException ex) {

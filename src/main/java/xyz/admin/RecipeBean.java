@@ -47,6 +47,8 @@ public class RecipeBean implements Serializable {
      * @param recipe id of recipe in need of an update
      */
     public void openUpdateDialog(Recipe recipe) {
+        System.out.print("openUpdateDialog: "+recipe.getId());
+        System.out.println(recipe.getName());
         this.recipeForUpdateDialog = recipe;
         User ufid = recipe.getUser();
         this.userId = ufid.getId();
@@ -67,6 +69,8 @@ public class RecipeBean implements Serializable {
     }
 
     public void saveUpdateDialog() {
+        System.out.println("saveUpdateDialog: "+userId);
+        System.out.println("saveUpdateDialog cat: "+categoryId);
         /**
          * Get user_id from 'this' Get user with user_id from userFacade SetUpdateRecipe.user
          */
@@ -141,6 +145,22 @@ public class RecipeBean implements Serializable {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 
     @EJB

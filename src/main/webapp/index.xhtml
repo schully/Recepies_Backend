@@ -17,6 +17,10 @@
                     #{recipe.name}
             </p:column>
             <p:column>
+                <f:facet name="header">Picture</f:facet>
+                    #{recipe.picture}
+            </p:column>
+            <p:column>
                 <f:facet name="header">Category</f:facet>
                     #{recipe.category.name}
             </p:column>
@@ -46,6 +50,8 @@
                     <p:inputText value="#{Recipe.recipeForUpdateDialog.id}" id="id" disabled="true" />
                     <h:outputLabel value="Name" for="name" />
                     <p:inputText value="#{Recipe.recipeForUpdateDialog.name}" id="name" />
+                    <h:outputLabel value="Picture" for="picture" />
+                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.picture}" id="picture" />
                     <h:outputLabel value="Category" for="category" />
                     <p:selectOneMenu value="#{Recipe.categoryId}" id="category" >
                         <f:selectItems value="#{Category.categories}" var="category" itemLabel="#{category.name}" 
@@ -54,7 +60,7 @@
                     <h:outputLabel value="Description" for="description" />
                     <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.description}" id="description" />
                     <h:outputLabel value="Instructions" for="instructions" />
-                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.instructions}" id="instructions" />
+                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.instructions}" id="instructions" />>
                     <h:outputLabel value="User" for="user" />
                     <p:selectOneMenu value="#{Recipe.userId}" id="user">
                         <f:selectItems value="#{User.users}" var="user" itemLabel="#{user.username}"
@@ -80,7 +86,6 @@
                 <p:commandButton style="float:right;" icon="fa fa-save" action="#{Recipe.saveComments()}" onclick="PF('commentDialog').hide()" />
             </h:form>
         </p:dialog>
-
     </h:body>
 </html>
 

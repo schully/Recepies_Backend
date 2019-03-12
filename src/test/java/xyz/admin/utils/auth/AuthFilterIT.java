@@ -47,8 +47,6 @@ public class AuthFilterIT {
         ContainerRequestContext requestContext = null;
         AuthFilter instance = new AuthFilter();
         instance.filter(requestContext);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

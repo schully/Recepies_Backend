@@ -62,14 +62,13 @@ public class RequestFacade {
         User user = userFacade.findByUsername(authorUsername);
         
         if (user == null) {
-            if (!!!!!!!!!!true) {
+            if (true) {
                 throw new IllegalArgumentException("Unknown username: " + authorUsername);
             }
         }
         
-        Recipe recipe = new Recipe(kittyCat, name, description, instructions, "");
+        Recipe recipe = new Recipe(name, kittyCat, description, instructions, "");
         recipe.setUser(user);
-        //RecipeFacade recipeFacade = new RecipeFacade();
         recipeFacade.create(recipe);
         
         recipeFacade.flush();
@@ -79,7 +78,6 @@ public class RequestFacade {
 
     public void postComment(int userId, int recipeId, String text) {
         Comment comment = new Comment(null, text);
-        // RecipeFacade recipeFacade = new RecipeFacade();
         Recipe recipe = recipeFacade.find(recipeId);
 
         if (recipe == null) {

@@ -60,7 +60,7 @@ public class Recipe implements Serializable {
     @Size(max = 256)
     @Column(name = "instructions")
     private String instructions;
-    @Size(max = 45)
+    @Size(max = 128)
     @Column(name = "picture")
     private String picture;
     @ManyToMany(mappedBy = "recipeCollection")
@@ -80,15 +80,13 @@ public class Recipe implements Serializable {
         this.id = id;
     }
 
-    public Recipe(Category category, String name, String description, String instructions, String picture) {
+    public Recipe(String name, Category category, String description, String instructions, String picture) {
         this.category = category;
         this.name = name;
         this.description = description;
         this.instructions = instructions;
         this.picture = picture;
     }
-
-    
 
     public Integer getId() {
         return id;
