@@ -5,6 +5,7 @@
  */
 package xyz.admin.api;
 
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONException;
 import org.primefaces.json.JSONObject;
+import xyz.admin.entities.Comment;
 import xyz.admin.entities.Recipe;
 import xyz.admin.entities.RecipeHasIngredient;
 
@@ -31,6 +33,42 @@ public class RequestHandler {
 
     @EJB
     private RequestFacade requestFacade;
+
+    @GET
+    @Path("/{recipeid}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getComments(@PathParam("recipeid") Integer id) {
+        List<Comment> comments = requestFacade.getComments(id);
+
+        JSONArray json = new JSONArray();
+
+        for (Comment c : comments) {
+            JSONObject cObj = new JSONObject();
+            cObj.put("text", c.getText());
+            json.put(cObj);
+        }
+
+        return Response.ok(json.toString()).build();
+    }
+
+    @GET
+    @Path("/recipes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRecipes() {
+        List<Recipe> recipes = requestFacade.getRecipes();
+
+        JSONArray json = new JSONArray();
+
+        for (Recipe r : recipes) {
+            JSONObject rObj = new JSONObject();
+            rObj.put("name", r.getName());
+            rObj.put("id", r.getId());
+            rObj.put("imageUrl", r.getPicture());
+            json.put(rObj);
+        }
+
+        return Response.ok(json.toString()).build();
+    }
 
     @GET
     @Path("/recipe/{id}")
@@ -59,6 +97,7 @@ public class RequestHandler {
             ingredientObj.put("quantity", ingredient.getQuantity());
             ingredients.put(ingredientObj);
         }
+
         obj.put("ingredients", ingredients);
         obj.put("category", recipe.getCategory().getName());
 
@@ -69,13 +108,12 @@ public class RequestHandler {
     @Path("/{recipeId}/addcomment")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postComment(String bodyJson, @PathParam("recipeId") int recipeId) {
+    public Response postComment(String bodyJson, @PathParam("recipeId") int recipeId, @Context ContainerRequestContext request) {
         JSONObject body = new JSONObject(bodyJson);
-        int userId;
+        int userId = (int) request.getProperty("id");
         String text;
+
         try {
-            userId = body.getInt("user");
-            recipeId = body.getInt("recipe");
             text = body.getString("text");
             requestFacade.postComment(userId, recipeId, text);
         } catch (JSONException e) {
@@ -102,13 +140,12 @@ public class RequestHandler {
     public Response postRecipe(String bodyJson, @Context ContainerRequestContext ctx) {
         JSONObject body = new JSONObject(bodyJson);
         int createdRecipeId = 1337;
-        String name, description, instructions, category;
+        String name, description, instructions, category, quantity;
         try {
             name = body.getString("name");
             description = body.getString("description");
             instructions = body.getString("instructions");
             category = body.getString("category");
-            //  insertRecipeIntroDb(bane, descriptionm instrucitons)
             createdRecipeId = requestFacade.insertRecipe(
                     ctx.getProperty("username").toString(),
                     name,
@@ -124,7 +161,10 @@ public class RequestHandler {
         }
 
         JSONObject output = new JSONObject();
+        JSONObject ingredient = new JSONObject();
         JSONObject recipe = new JSONObject();
+
+//        ingredient.put("quantity", quantity);
         recipe.put("id", createdRecipeId);
         recipe.put("name", name);
         recipe.put("description", description);

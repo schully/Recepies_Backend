@@ -9,14 +9,18 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import xyz.admin.entities.Category;
 import xyz.admin.entities.Comment;
+import xyz.admin.entities.Ingredient;
 import xyz.admin.entities.Recipe;
 import xyz.admin.entities.User;
 import xyz.admin.sessionbeans.CategoryFacade;
+import xyz.admin.sessionbeans.CommentFacade;
+import xyz.admin.sessionbeans.IngredientFacade;
 import xyz.admin.sessionbeans.RecipeFacade;
 import xyz.admin.sessionbeans.UserFacade;
 import xyz.admin.utils.ConnectionFactory;
@@ -38,8 +42,25 @@ public class RequestFacade {
     @EJB
     CategoryFacade categoryFacade;
     
+    @EJB
+    IngredientFacade ingredientFacade;
+    
+    @EJB
+    CommentFacade commentFacade;
+
     public Recipe getRecipe(int id) {
         return recipeFacade.find(id);
+    }
+
+    public List<Comment> getComments(int recipeId) {
+        return commentFacade.findByRecipeId(recipeId);
+    }
+    public List<Recipe> getRecipes() {
+        return recipeFacade.findAll();
+    }
+
+    public void insertIngredient(int recipe, int ingredient, String quantity) {
+     
     }
 
     /**
@@ -58,19 +79,19 @@ public class RequestFacade {
                 ex.printStackTrace();
             }
         }
-        
+
         User user = userFacade.findByUsername(authorUsername);
-        
+
         if (user == null) {
             if (true) {
                 throw new IllegalArgumentException("Unknown username: " + authorUsername);
             }
         }
-        
+
         Recipe recipe = new Recipe(name, kittyCat, description, instructions, "");
         recipe.setUser(user);
         recipeFacade.create(recipe);
-        
+
         recipeFacade.flush();
 
         return recipe.getId();
@@ -93,6 +114,7 @@ public class RequestFacade {
         }
 
         comment.setUser(user);
+        commentFacade.create(comment);
     }
 
 }

@@ -9,6 +9,12 @@
 
     <h:head>
         <title>Administrator</title>
+        <style>
+            .ui-datalist-data {
+                list-style-type: none;
+                padding: 2px;
+            }
+        </style>
     </h:head>
     <h:body>
         <p:dataTable value="#{Recipe.recipes}" var="recipe" id="dataTable">
@@ -36,6 +42,13 @@
                 <f:facet name="header">User</f:facet>
                     #{recipe.user.username}
             </p:column>
+
+            <p:column headerText="Ingredients">
+                <f:facet name="header">Ingredients</f:facet>
+                <p:dataList value="#{recipe.recipeHasIngredientCollection}" var="ingredient" >
+                    #{ingredient.ingredient1.name} :  #{ingredient.quantity}
+                </p:dataList>    
+            </p:column>
             <p:column width="80" headerText="Update">
                 <p:commandButton icon="fa fa-edit" onclick="PF('updateDialog').show()" action="#{Recipe.openUpdateDialog(recipe)}" update=":updateForm"/>
             </p:column>
@@ -60,7 +73,9 @@
                     <h:outputLabel value="Description" for="description" />
                     <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.description}" id="description" />
                     <h:outputLabel value="Instructions" for="instructions" />
-                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.instructions}" id="instructions" />>
+                    <p:inputTextarea value="#{Recipe.recipeForUpdateDialog.instructions}" id="instructions" />
+                    <h:outputLabel value="Ingredients" for="ingredient" />
+                    <p:inputTextarea  value="#{ingredient}" id="ingredient" />
                     <h:outputLabel value="User" for="user" />
                     <p:selectOneMenu value="#{Recipe.userId}" id="user">
                         <f:selectItems value="#{User.users}" var="user" itemLabel="#{user.username}"

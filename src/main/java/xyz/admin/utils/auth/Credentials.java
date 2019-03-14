@@ -10,8 +10,18 @@ package xyz.admin.utils.auth;
  * @author Daniel GV
  */
 public class Credentials {
+    
+    private int id;
     private String username;
     private String password;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -26,6 +36,12 @@ public class Credentials {
     }
 
     public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Credentials(String username, String password, int id) {
+        this.id = id;
+        this.username = username;
         this.password = password;
     }
 

@@ -22,9 +22,11 @@ import xyz.admin.sessionbeans.IngredientFacade;
 @SessionScoped
 public class IngredientBean implements Serializable{
 
+    
+    
     @EJB
     IngredientFacade ingredientFacade;
-
+    
     public List<Ingredient> getIngredients() {
         return ingredientFacade.findAll();
     }

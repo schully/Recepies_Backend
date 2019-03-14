@@ -5,6 +5,7 @@
  */
 package xyz.admin.sessionbeans;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,6 +26,17 @@ public class CommentFacade extends AbstractFacade<Comment> {
         return em;
     }
 
+    public List<Comment> findByRecipeId(int recipeId) {
+        List<Comment> cats = em.createNamedQuery("Comment.findByRecipeId", Comment.class)
+                .setParameter("recipeId", recipeId).getResultList();
+
+        if (cats.isEmpty()) {
+            return null;
+        }
+
+        return cats;
+    }
+    
     public CommentFacade() {
         super(Comment.class);
     }

@@ -50,7 +50,7 @@ public class CredentialFacade {
             stmt.setString(1, username);
             ResultSet data = stmt.executeQuery();
             if (data.next()) {
-                return new Credentials(data.getString("username"), data.getString("password"));
+                return new Credentials(data.getString("username"), data.getString("password"),data.getInt("id"));
             } else {
                 System.out.println("No user found for username: " + username);
                 return null;
@@ -66,6 +66,7 @@ public class CredentialFacade {
         BCrypt.Result result = BCrypt.verifyer().verify(rawPassword.toCharArray(), credentials.getPassword());
         
         System.out.println("Comparing " + rawPassword + " and " + credentials.getPassword());
+        System.out.println("correct pass?: "+result.verified);
         return result.verified;
     }
 }

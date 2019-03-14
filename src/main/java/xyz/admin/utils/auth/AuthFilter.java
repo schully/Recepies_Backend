@@ -42,8 +42,10 @@ public class AuthFilter implements ContainerRequestFilter {
         if (authHeader.length() > 0) {
             try {
                 Credentials credentials = CredentialFacade.createCredentials(authHeader);
+                Credentials userCr = CredentialFacade.get(credentials.getUsername());
                 if (CredentialFacade.verify(credentials.getUsername(), credentials.getPassword())) {
                     requestContext.setProperty("username", credentials.getUsername());
+                    requestContext.setProperty("id", userCr.getId());
                     return;
                 }
             } catch (Exception e) {
