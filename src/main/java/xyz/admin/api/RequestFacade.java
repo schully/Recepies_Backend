@@ -41,10 +41,10 @@ public class RequestFacade {
 
     @EJB
     CategoryFacade categoryFacade;
-    
+
     @EJB
     IngredientFacade ingredientFacade;
-    
+
     @EJB
     CommentFacade commentFacade;
 
@@ -55,18 +55,19 @@ public class RequestFacade {
     public List<Comment> getComments(int recipeId) {
         return commentFacade.findByRecipeId(recipeId);
     }
+
     public List<Recipe> getRecipes() {
         return recipeFacade.findAll();
     }
 
     public void insertIngredient(int recipe, int ingredient, String quantity) {
-     
+
     }
 
     /**
      * @return The ID of the inserted recipe.
      */
-    public int insertRecipe(String authorUsername, String category, String name, String description, String instructions) {
+    public int insertRecipe(String authorUsername, String name, String category, String description, String instructions, String picture) {
         Category kittyCat = categoryFacade.findByName(category);
         if (kittyCat == null) {
             //  category does not exist
@@ -88,7 +89,7 @@ public class RequestFacade {
             }
         }
 
-        Recipe recipe = new Recipe(name, kittyCat, description, instructions, "");
+        Recipe recipe = new Recipe(name, kittyCat, description, instructions, picture);
         recipe.setUser(user);
         recipeFacade.create(recipe);
 

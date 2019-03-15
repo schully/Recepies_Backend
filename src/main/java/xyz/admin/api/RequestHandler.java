@@ -5,6 +5,7 @@
  */
 package xyz.admin.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -39,16 +40,24 @@ public class RequestHandler {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getComments(@PathParam("recipeid") Integer id) {
         List<Comment> comments = requestFacade.getComments(id);
-
-        JSONArray json = new JSONArray();
-
-        for (Comment c : comments) {
-            JSONObject cObj = new JSONObject();
-            cObj.put("text", c.getText());
-            json.put(cObj);
+        if(comments == null) {
+            comments = new ArrayList<>();
         }
+        JSONArray json = new JSONArray();
+        try {
 
-        return Response.ok(json.toString()).build();
+            for (Comment c : comments) {
+                JSONObject cObj = new JSONObject();
+                cObj.put("user", c.getUser().getUsername());
+                cObj.put("text", c.getText());
+                json.put(cObj);
+            }
+
+            return Response.ok(json.toString()).build();
+        }catch (Exception e) {
+            System.out.println("comments error: "+e.getMessage());
+            return Response.status(400).build();
+        }
     }
 
     @GET
@@ -140,18 +149,20 @@ public class RequestHandler {
     public Response postRecipe(String bodyJson, @Context ContainerRequestContext ctx) {
         JSONObject body = new JSONObject(bodyJson);
         int createdRecipeId = 1337;
-        String name, description, instructions, category, quantity;
+        String name, description, instructions, category, picture;
         try {
             name = body.getString("name");
             description = body.getString("description");
             instructions = body.getString("instructions");
             category = body.getString("category");
+            picture = body.getString("picture");
             createdRecipeId = requestFacade.insertRecipe(
                     ctx.getProperty("username").toString(),
                     name,
                     category,
                     description,
-                    instructions
+                    instructions,
+                    picture
             );
 
         } catch (JSONException ex) {
@@ -161,7 +172,7 @@ public class RequestHandler {
         }
 
         JSONObject output = new JSONObject();
-        JSONObject ingredient = new JSONObject();
+//        JSONObject ingredient = new JSONObject();
         JSONObject recipe = new JSONObject();
 
 //        ingredient.put("quantity", quantity);
